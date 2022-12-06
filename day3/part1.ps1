@@ -1,16 +1,16 @@
 $chars = ".abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 $chars = $chars.ToCharArray()
 
-for ($count=0; $count -lt $chars.Length; $count++){
-    Write-Host "$count $($chars[$count])"
+$puzzleinput = Get-Content .\input.txt
+$return = 0
+
+foreach ($line in $puzzleinput){
+    $first=($line.Substring(0,$line.Length/2)).ToCharArray()
+    $second=($line.Substring($line.Length/2)).ToCharArray()
+    $count=0
+    while (($count -lt $first.Count) -and (-not ($second.Contains($first[$count])))){
+        $count++
+    }
+    $return += [array]::IndexOf($chars,$first[$count])
 }
-
-
-# $puzzleinput = Get-Content .\input.txt
-
-# foreach ($line in $puzzleinput){
-#     $line
-#     $line.Substring(0,$line.Length/2)
-#     $line.Substring($line.Length/2)
-
-# }
+$return
