@@ -1,11 +1,9 @@
-$puzzleinput = Get-Content .\input.txt
-$puzzleinput = $puzzleinput.ToCharArray()
-$awnser = 0
+$puzzleinput = (Get-Content .\input.txt).ToCharArray()
+$length = 14
 $count = 0
-while (-not($awnser)) {
-    if (($puzzleinput[$count..($count+13)] | Sort-Object | Get-Unique).Count -eq 14){
-        $awnser = $count+14
-    }
+
+while (($puzzleinput[$count..($count+$length-1)] | Sort-Object | Get-Unique).Count -ne $length) {
     $count++
 }
-$awnser
+
+$count + $length 
