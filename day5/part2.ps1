@@ -1,40 +1,37 @@
 
-$inputfile = ".\input.txt"
+$inputfile = ".\testinput.txt"
+$stacks = 3
 $puzzleinput = Get-Content $inputfile
-$return = 70000000
 
-[System.Collections.ArrayList]$dirs = @()
-[hashtable]$sizes = @{}
+$array = [string[]]::new($stacks)
 
-foreach ($line in $puzzleinput) {
-    if ($line -like '$ cd *') {
-        if (($line.Split(' '))[-1] -like '..'){
-            $dirs.RemoveAt($dirs.Count-1)
+$count=0
+do {
+    [string]$line = $puzzleinput[$count]
+    $count++
+    for ($i=0;($i -le $stacks) -and (($i*4+1) -le $line.Length);$i++){
+        if (($line.Substring(($i*4+1),1) -ne ' ') -and ($line.Substring(($i*4+1),1) -gt 9)) {
+            $array[$i] += $line.Substring(($i*4+1),1)
         }
-        else {
-            $current=($line.Split(' '))[-1]
-
-            while ($sizes.$current -ge 0) {
-                $current += "_"
-            }
-            $dirs.Add($current) | Out-Null
-            $sizes.Add($dirs[-1],0) | Out-Null
-        }
-    } 
-    elseif ((-not($line -like '$*')) -and (-not($line -like 'dir*'))) {
-        foreach ($dir in $dirs) {
-            $sizes.$dir += [int]($line.Split(' '))[0]
-        }
-
     }
-}
+} until (-not ($line))
 
-$needed = $sizes.'/' - 40000000
-
-foreach ($value in $sizes.Values) {
-    if (($value -ge $needed) -and ($value -lt $return)) {
-        $return = $value
+do {
+    [string]$line = $puzzleinput[$count]
+    $count++
+    $split = $line.Split(' ')
+    [int]$amount = $split[1]
+    [int]$from = $split[3] 
+    [int]$to = $split[5]
+    for ($i=1;$i -le $amount;$i++){
+        $array[$to-1] = ($array[$from-1]).Substring(0,1) + $array[$to-1]
+        $array[$from-1] = ($array[$from-1]).Remove(0,1)
     }
+} until (-not ($line))
+
+[string]$return = ""
+for ($i=0;$i -lt $stacks;$i++){
+    $return += $array[$i].Substring(0,1)
 }
 
 $return
