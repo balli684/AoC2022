@@ -1,6 +1,6 @@
 
-$inputfile = ".\testinput.txt"
-$stacks = 3
+$inputfile = ".\input.txt"
+$stacks = 9
 $puzzleinput = Get-Content $inputfile
 
 $array = [string[]]::new($stacks)
@@ -23,10 +23,8 @@ do {
     [int]$amount = $split[1]
     [int]$from = $split[3] 
     [int]$to = $split[5]
-    for ($i=1;$i -le $amount;$i++){
-        $array[$to-1] = ($array[$from-1]).Substring(0,1) + $array[$to-1]
-        $array[$from-1] = ($array[$from-1]).Remove(0,1)
-    }
+    $array[$to-1] = ($array[$from-1]).Substring(0,$amount) + $array[$to-1]
+    $array[$from-1] = ($array[$from-1]).Remove(0,$amount)
 } until (-not ($line))
 
 [string]$return = ""
